@@ -63,6 +63,24 @@ def create_raw_tables(cursor):
     """
 
     # Write CREATE TABLE code here
+    cursor.execute (
+        Create Table if not exist
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            student_id TEXT,
+            name TEXT,
+            course TEXT,
+            quiz TEXT,
+            exam TEXT,
+            attendance TEXT
+    )
+    
+    cursor.execute (
+            Create Table if not exist
+                student_id INTEGER PRIMARY KEY AUTOINCREMENT
+                raw_text TEXT
+    )
+
+    
     pass
 
 
@@ -79,9 +97,23 @@ def insert_structured_records(cursor, records):
     quiz
     exam
     attendance
-    """
 
     # Write INSERT INTO code here
+    for record in records:
+    cursor.executemany ("""
+        insert into raw_students_scores ("student_id", "name", "course", "quiz", "exam", "attendance")
+        Values (?,?,?,?,?,?)
+        """, (
+        record["student_id"],
+        record["name"],
+        record["course"],
+        record[ "quiz"],
+        record["exam"],
+        record["attendance"],
+        record["final_grade"],
+        record["status"],
+        record["comment"]
+    ))                 
     pass
 
 
@@ -96,6 +128,12 @@ def insert_unstructured_records(cursor, records):
     """
 
     # Write INSERT INTO code here
+    for record in records:
+        cursor.execute ("""insert into raw_student_comments (raw_text)
+                        Values (?)
+                        """, (record,))
+                        
+    
     pass
 
 
@@ -180,6 +218,21 @@ def select_final_report(cursor):
     """
 
     # Write SELECT code here
+    cursor.execute (
+    Select 
+            student_id,
+            name,
+            course,
+            quiz,
+            exam,
+            attendance,
+            final_grade,
+            status,
+            comment,
+                from final_student_report"")
+                records = cursor.fetchall ()
+                for record in records:
+                print (record)
     pass
 
 
